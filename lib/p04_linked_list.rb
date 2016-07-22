@@ -1,3 +1,4 @@
+require 'byebug'
 class Link
   attr_accessor :key, :val, :next, :prev
 
@@ -18,7 +19,10 @@ class LinkedList
   attr_accessor :link
 
   def initialize
-    @link = []
+    @link_start = Link.new(nil, nil)
+    @link_end = Link.new(nil, nil)
+    @link_start.next = @link_end
+    @link_end.prev = @link_start
   end
 
   def [](i)
@@ -27,20 +31,20 @@ class LinkedList
   end
 
   def first
-    @link[0]
+    @link_start.next
   end
 
   def last
-    @link[-1]
+    @link_end.prev
   end
 
   def empty?
-    @link.empty?
+    @link_start.next == @link_end
   end
 
   def get(key)
-    @link.each do |el|
-      return el.val if el.key == key
+    each do |link|
+      return link.val if link.key == key
     end
     nil
   end
@@ -52,36 +56,39 @@ class LinkedList
   def insert(key, val)
     new_link = Link.new(key, val)
     if empty?
-      @link << new_link
+      @link_start.next = new_link
+      @link_end.prev = new_link
+      new_link.next = @link_end
+      new_link.prev = @link_start
     elsif !include?(key)
       last.next = new_link
       new_link.prev = last
-      @link << new_link
+      new_link.next = @link_end
+      @link_end.prev = new_link
     else
-      link.each do |el|
-        el.val = val if el.key == key
+      self.each do |link|
+        link.val = val if link.key == key
       end
     end
 
   end
 
   def remove(key)
-    previous_link = nil
-    next_link = nil
-    @link.each_with_index do |el, id|
-      if el.key == key
-        previous_link = @link[id-1]
-        next_link = @link[id + 1]
-        @link.delete(el)
-      end
+    current_link = nil
+    self.each do |link|
+      current_link = link if link.key == key
     end
-    next_link.prev = previous_link
-    previous_link.next = next_link
-
+    current_link.prev.next = current_link.next
+    current_link.next.prev = current_link.prev
   end
 
   def each(&blk)
-    @link.each{|el| blk.call(el)}
+    # debugger
+    start = @link_start
+    while start.next != @link_end
+      blk.call(start.next)
+      start = start.next
+    end
   end
 
   # uncomment when you have `each` working and `Enumerable` included
