@@ -39,21 +39,24 @@ class LRUCache
     # suggested helper method; insert an (un-cached) key
     value = @prc.call(key)
     @map.set(key, @store.insert(key,value))
+    eject! if count > @max
     return value
   end
 
   def update_link!(link)
     # suggested helper method; move a link to the end of the list
-    @store.remove(link.key)
-    @store.insert(link.key, link.val)
+    link.prev.next = link.next
+    link.next.prev = link.prev
+    link.prev = @store.last
+    link.next = @store.last.next
+    @store.last.next = link
 
   end
 
   def eject!
     oldest_link = @store.first
-    oldest_link_key = oldest_link.key
-
-    @map.delete(oldest_link)
-    @store.remove(oldest_link_key)
+    oldest_link.prev.next = oldest_link.next
+    oldest_link.next.prev = oldest_link.prev
+    @map.delete(oldest_link.key)
   end
 end
