@@ -74,20 +74,20 @@ describe HashMap do
     end
   end
 
-  describe "#each" do
-    it "enumerates over all the items and yields key-value pairs" do
-      i = 0
-      vals = (1..3).to_a
-      hash.each do |k, v|
-        expect(v).to eq(vals[i])
-        i += 1
-      end
-    end
-
-    it "includes Enumerable module" do
-      expect(hash.class.ancestors).to include(Enumerable)
-    end
-  end
+  # describe "#each" do
+  #   it "enumerates over all the items and yields key-value pairs" do
+  #     i = 0
+  #     vals = (1..3).to_a
+  #     hash.each do |k, v|
+  #       expect(v).to eq(vals[i])
+  #       i += 1
+  #     end
+  #   end
+  #
+  #   it "includes Enumerable module" do
+  #     expect(hash.class.ancestors).to include(Enumerable)
+  #   end
+  # end
 
   describe "#resize!" do
     before do

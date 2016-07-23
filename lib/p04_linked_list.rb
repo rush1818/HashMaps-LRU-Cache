@@ -43,6 +43,7 @@ class LinkedList
   end
 
   def get(key)
+    # byebug
     each do |link|
       return link.val if link.key == key
     end
@@ -70,7 +71,7 @@ class LinkedList
         link.val = val if link.key == key
       end
     end
-
+    new_link
   end
 
   def remove(key)
@@ -78,8 +79,11 @@ class LinkedList
     self.each do |link|
       current_link = link if link.key == key
     end
+    return "" if current_link.nil?
     current_link.prev.next = current_link.next
     current_link.next.prev = current_link.prev
+    current_link.prev = nil
+    current_link.next = nil
   end
 
   def each(&blk)
